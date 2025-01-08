@@ -1,0 +1,46 @@
+ body {
+     background-image: url('../assets/images/fondo.jpg');
+     background-size: cover;
+     background-position: center;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     min-height: 100vh;
+     margin: 0;
+ }
+
+ .card {
+     background-color: #34495e;
+     /* Fondo gris oscuro */
+     color: #ecf0f1;
+     /* Texto blanco */
+     border: none;
+     border-radius: 10px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+ }
+
+ .card-body {
+     padding: 2rem;
+ }
+
+ .btn-primary {
+     background-color: #e74c3c;
+     /* Botón rojo */
+     border: none;
+ }
+
+ .btn-primary:hover {
+     background-color: #c0392b;
+     /* Rojo más oscuro en hover */
+ }
+
+ a {
+     color: #ecf0f1;
+     /* Enlace blanco */
+     text-decoration: underline;
+ }
+
+ a:hover {
+     color: #bdc3c7;
+     /* Enlace gris claro en hover */
+ }

@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Redirigir todas las solicitudes a index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?action=$1 [QSA,L]
+
+# Asegurarse de que los archivos CSS, JS e imágenes se sirvan correctamente
+RewriteRule ^assets/(.*)$ assets/$1 [L]
