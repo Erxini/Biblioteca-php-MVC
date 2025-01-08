@@ -1,5 +1,4 @@
 <?php
-
 class ReservaController
 {
     private $reservarModel;
@@ -27,16 +26,17 @@ class ReservaController
                 if ($disponible) {
                     $resultado = $this->reservarModel->reservarLibro($isbn, $fechaDesde, $fechaHasta);
                     if ($resultado) {
-                        echo "Reserva realizada con éxito.";
+                        $mensaje = "Reserva realizada con éxito.";
                     } else {
-                        echo "Error al guardar la reserva. Inténtelo de nuevo.";
+                        $mensaje = "Error al guardar la reserva. Inténtelo de nuevo.";
                     }
                 } else {
-                    echo "El libro no está disponible en el rango de fechas solicitado.";
+                    $mensaje = "El libro no está disponible en el rango de fechas solicitado.";
                 }
             } else {
-                echo "Todos los campos son obligatorios.";
+                $mensaje = "Todos los campos son obligatorios.";
             }
+            require_once 'view/MensajeReserva.php';
         } else {
             $this->mostrarFormularioReserva();
         }

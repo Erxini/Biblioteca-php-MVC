@@ -64,6 +64,7 @@ switch ($action) {
             exit();
         }
         break;
+
     case 'modificarLibro':
         if ($_SESSION['rol'] == 'administrador') {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {

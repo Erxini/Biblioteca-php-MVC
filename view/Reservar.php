@@ -29,7 +29,7 @@
             </div>
         </form>
         <div class="mt-3 text-center">
-            <a href="index.php?action=dashboard" class="btn btn-secondary">Volver al Dashboard</a>
+            <a href="index.php?action=dashboard" class="btn btn-secondary">Volver a página principal</a>
         </div>
     </div>
 

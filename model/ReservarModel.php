@@ -35,4 +35,15 @@ class ReservarModel
         $stmt = $this->db->query("SELECT * FROM prestamos");
         return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
+    //Verificar disponibilidad del libro
+    public function verificarDisponibilidad($isbn, $fechaDesde, $fechaHasta)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) AS total FROM prestamos WHERE isbn = :isbn AND (fecha_desde <= :fechaHasta AND fecha_hasta >= :fechaDesde)");
+        $stmt->bindParam(':isbn', $isbn);
+        $stmt->bindParam(':fechaDesde', $fechaDesde);
+        $stmt->bindParam(':fechaHasta', $fechaHasta);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] == 0;
+    }
 }

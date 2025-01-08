@@ -9,30 +9,34 @@ class LibroModel
     {
         $this->db = (new Database())->getConnection();
     }
-
     // Obtener todos los libros
     public function obtenerTodosLosLibros()
     {
         $query = $this->db->query("SELECT * FROM libros");
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
-
     // Agregar un libro
-    public function agregarLibro($titulo, $autor, $isbn)
+    public function agregarLibro($titulo, $autor, $isbn, $portadaRuta)
     {
-        $query = "INSERT INTO libros (titulo, autor, isbn) VALUES (?, ?, ?)";
+        $query = "INSERT INTO libros (titulo, autor, isbn, portada) VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([$titulo, $autor, $isbn]);
+        return $stmt->execute([$titulo, $autor, $isbn, $portadaRuta]);
     }
-
     // Modificar un libro
-    public function modificarLibro($id, $titulo, $autor, $isbn)
+    public function modificarLibro($id, $titulo, $autor, $isbn, $portadaRuta = null)
     {
-        $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ? WHERE id = ?";
-        $stmt = $this->db->prepare($query);
-        return $stmt->execute([$titulo, $autor, $isbn, $id]);
+        if ($portadaRuta) {
+            // Actualizar libro con nueva portada
+            $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ?, portada = ? WHERE id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$titulo, $autor, $isbn, $portadaRuta, $id]);
+        } else {
+            // Actualizar libro sin cambiar la portada
+            $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ? WHERE id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$titulo, $autor, $isbn, $id]);
+        }
     }
-
     // Obtener un libro por su ID
     public function obtenerLibroPorId($id)
     {
@@ -41,7 +45,6 @@ class LibroModel
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
     // Contar todos los libros
     public function contarLibros()
     {
@@ -49,7 +52,6 @@ class LibroModel
         $result = $query->fetch(PDO::FETCH_ASSOC);
         return $result ? $result['total'] : 0;
     }
-
     // Eliminar libro
     public function eliminarLibroPorId($id)
     {
