@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Libro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://localhost/Biblioteca/assets/images/logo.jpg" type="image/x-icon">
     <style>
         body {
             background-image: url('http://localhost/Biblioteca/assets/images/fondo_estanteria.jpg');

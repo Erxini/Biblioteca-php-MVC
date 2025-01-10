@@ -18,6 +18,7 @@ CREATE TABLE libros (
     ISBN VARCHAR(13) PRIMARY KEY,
     titulo VARCHAR(100),
     autor VARCHAR(100)
+    portada VARCHAR(255),
 );
 
 -- Tabla prestamos

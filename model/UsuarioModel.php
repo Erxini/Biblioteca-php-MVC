@@ -22,7 +22,6 @@ class Usuario
         return password_verify($password, $this->password);
     }
 }
-
 class UsuarioModel
 {
     private $db;
@@ -31,7 +30,6 @@ class UsuarioModel
     {
         $this->db = $db;
     }
-
     public function autenticarUsuario($username, $password)
     {
         $query = "SELECT * FROM usuarios WHERE nombre = :username";
@@ -40,13 +38,11 @@ class UsuarioModel
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Depuración: Verificar que se obtuvieron los datos del usuario
         error_log("Resultado de la consulta: " . print_r($result, true));
 
-        if ($result && $password === $result['clave']) { // Comparar la contraseña con el campo 'clave'
+        if ($result && $password === $result['clave']) {
             return new Usuario($result['id'], $result['nombre'], $result['ape1'], $result['ape2'], $result['rol']);
         } else {
-            // Depuración: Contraseña incorrecta o usuario no encontrado
             error_log("Contraseña incorrecta o usuario no encontrado para: " . $username);
         }
         return null;

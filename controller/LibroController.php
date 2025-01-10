@@ -23,26 +23,16 @@ class LibroController
             $titulo = trim($_POST['titulo']);
             $autor = trim($_POST['autor']);
             $isbn = trim($_POST['isbn']);
-            $portada = $_FILES['portada'];
+            $portada = null;
 
-            if (!empty($titulo) && !empty($autor) && !empty($isbn) && !empty($portada)) {
-                // Crear el directorio 'uploads' si no existe
-                if (!is_dir('assets/images')) {
-                    mkdir('assets/images', 0777, true);
-                }
-
-                // Manejar la carga de la imagen de la portada
-                $portadaRuta = 'assets/images/' . basename($portada['name']);
-                if (move_uploaded_file($portada['tmp_name'], $portadaRuta)) {
-                    $this->libroModel->agregarLibro($titulo, $autor, $isbn, $portadaRuta);
-                    header('Location: index.php?action=mostrarLibros');
-                    exit();
-                } else {
-                    echo "Error al cargar la imagen de la portada.";
-                }
-            } else {
-                echo "Por favor, complete todos los campos.";
+            if (isset($_FILES['portada']) && $_FILES['portada']['error'] == 0) {
+                $portada = 'assets/images/' . basename($_FILES['portada']['name']);
+                move_uploaded_file($_FILES['portada']['tmp_name'], $portada);
             }
+
+            $this->libroModel->agregarLibro($titulo, $autor, $isbn, $portada);
+            header('Location: index.php?action=mostrarLibros');
+            exit();
         } else {
             require_once 'view/AgregarLibro.php';
         }
@@ -51,52 +41,66 @@ class LibroController
     // Modificar un libro
     public function modificarLibro()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_GET['id'];
-            $titulo = trim($_POST['titulo']);
-            $autor = trim($_POST['autor']);
-            $isbn = trim($_POST['isbn']);
-            $portada = $_FILES['portada'];
+        if (isset($_GET['isbn'])) {
+            $isbn = $_GET['isbn'];
+            echo "ISBN recibido: $isbn<br>"; // Prueba temporal
+            $libro = $this->libroModel->obtenerLibroPorISBN($isbn);
 
-            if (!empty($titulo) && !empty($autor) && !empty($isbn)) {
-                // Manejar la carga de la imagen de la portada si se ha subido una nueva imagen
-                if (!empty($portada['name'])) {
-                    // Crear el directorio 'uploads' si no existe
-                    if (!is_dir('assets/images')) {
-                        mkdir('assets/images', 0777, true);
-                    }
+            // Prueba temporal para verificar los datos del libro
+            if ($libro) {
+                echo '<pre>';
+                print_r($libro);
+                echo '</pre>';
+            } else {
+                echo "No se encontró ningún libro con el ISBN: $isbn";
+            }
+            exit();
 
-                    $portadaRuta = 'assets/images/' . basename($portada['name']);
-                    if (move_uploaded_file($portada['tmp_name'], $portadaRuta)) {
-                        $this->libroModel->modificarLibro($id, $titulo, $autor, $isbn, $portadaRuta);
-                    } else {
-                        echo "Error al cargar la imagen de la portada.";
-                        return;
-                    }
-                } else {
-                    $this->libroModel->modificarLibro($id, $titulo, $autor, $isbn);
-                }
+            if (!$libro) {
+                // Redirigir si el libro no existe
                 header('Location: index.php?action=mostrarLibros');
                 exit();
-            } else {
-                echo "Por favor, complete todos los campos.";
             }
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $titulo = $_POST['titulo'];
+                $autor = $_POST['autor'];
+                $isbnNuevo = $_POST['isbn'];
+                $portada = $libro['portada'];
+
+                // Verificar si se ha subido una nueva portada
+                if (isset($_FILES['portada']) && $_FILES['portada']['error'] == 0) {
+                    $portada = 'assets/images/' . basename($_FILES['portada']['name']);
+                    move_uploaded_file($_FILES['portada']['tmp_name'], $portada);
+                }
+
+                $this->libroModel->modificarLibroPorISBN($isbn, $titulo, $autor, $isbnNuevo, $portada);
+
+                // Redirigir a la lista de libros
+                header('Location: index.php?action=mostrarLibros');
+                exit();
+            }
+
+            // Pasar los datos del libro a la vista
+            include 'view/ModificarLibro.php';
         } else {
-            $id = $_GET['id'];
-            $libro = $this->libroModel->obtenerLibroPorId($id);
-            require_once 'view/modificarLibro.php';
+            // Si no hay parámetro isbn, redirigir
+            header('Location: index.php?action=mostrarLibros');
+            exit();
         }
     }
+
     // Eliminar Libro
     public function eliminarLibro()
     {
         if (isset($_GET['id'])) {
-            $id = intval($_GET['id']);
+            $id = $_GET['id'];
             $this->libroModel->eliminarLibroPorId($id);
             header('Location: index.php?action=mostrarLibros');
             exit();
         } else {
-            echo "ID del libro no proporcionado.";
+            header('Location: index.php?action=mostrarLibros');
+            exit();
         }
     }
 }

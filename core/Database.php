@@ -23,7 +23,6 @@ class Database
         return $this->pdo;
     }
 
-    // Método estático para adaptarse a los modelos actuales
     public static function connect()
     {
         $instance = new self();
