@@ -28,16 +28,21 @@ class LibroModel
     // Modificar un libro por ISBN
     public function modificarLibroPorISBN($isbn, $titulo, $autor, $nuevoISBN, $portadaRuta = null)
     {
-        if ($portadaRuta) {
-            // Actualizar libro con nueva portada
-            $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ?, portada = ? WHERE isbn = ?";
-            $stmt = $this->db->prepare($query);
-            return $stmt->execute([$titulo, $autor, $nuevoISBN, $portadaRuta, $isbn]);
-        } else {
-            // Actualizar libro sin cambiar la portada
-            $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ? WHERE isbn = ?";
-            $stmt = $this->db->prepare($query);
-            return $stmt->execute([$titulo, $autor, $nuevoISBN, $isbn]);
+        try {
+            if ($portadaRuta) {
+                // Actualizar libro con nueva portada
+                $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ?, portada = ? WHERE isbn = ?";
+                $stmt = $this->db->prepare($query);
+                $result = $stmt->execute([$titulo, $autor, $nuevoISBN, $portadaRuta, $isbn]);
+            } else {
+                // Actualizar libro sin cambiar la portada
+                $query = "UPDATE libros SET titulo = ?, autor = ?, isbn = ? WHERE isbn = ?";
+                $stmt = $this->db->prepare($query);
+                $result = $stmt->execute([$titulo, $autor, $nuevoISBN, $isbn]);
+            }
+        } catch (PDOException $e) {
+            echo "Error en la consulta: " . $e->getMessage();
+            exit();
         }
     }
 
@@ -61,16 +66,6 @@ class LibroModel
             // Obtener el resultado
             $libro = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Prueba temporal para verificar los datos del libro
-            if ($libro) {
-                echo '<pre>';
-                print_r($libro);
-                echo '</pre>';
-            } else {
-                echo "No se encontró ningún libro con el ISBN: $isbn";
-            }
-            exit();
-
             return $libro;
         } catch (PDOException $e) {
             echo "Error en la consulta: " . $e->getMessage();
@@ -89,11 +84,22 @@ class LibroModel
         return $result ? $result['total'] : 0;
     }
 
-    // Eliminar libro por ID
-    public function eliminarLibroPorId($id)
+    // Eliminar libro por ISBN
+    public function eliminarLibroPorIsbn($isbn)
     {
-        $query = "DELETE FROM libros WHERE id = ?";
-        $stmt = $this->db->prepare($query);
-        return $stmt->execute([$id]);
+        try {
+            // Eliminar registros relacionados en la tabla prestamos
+            $query = "DELETE FROM prestamos WHERE isbn = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$isbn]);
+
+            // Eliminar el libro de la tabla libros
+            $query = "DELETE FROM libros WHERE isbn = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$isbn]);
+        } catch (PDOException $e) {
+            echo "Error en la consulta: " . $e->getMessage();
+            exit();
+        }
     }
 }

@@ -43,18 +43,7 @@ class LibroController
     {
         if (isset($_GET['isbn'])) {
             $isbn = $_GET['isbn'];
-            echo "ISBN recibido: $isbn<br>"; // Prueba temporal
             $libro = $this->libroModel->obtenerLibroPorISBN($isbn);
-
-            // Prueba temporal para verificar los datos del libro
-            if ($libro) {
-                echo '<pre>';
-                print_r($libro);
-                echo '</pre>';
-            } else {
-                echo "No se encontró ningún libro con el ISBN: $isbn";
-            }
-            exit();
 
             if (!$libro) {
                 // Redirigir si el libro no existe
@@ -93,9 +82,9 @@ class LibroController
     // Eliminar Libro
     public function eliminarLibro()
     {
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $this->libroModel->eliminarLibroPorId($id);
+        if (isset($_GET['isbn'])) {
+            $isbn = $_GET['isbn'];
+            $this->libroModel->eliminarLibroPorIsbn($isbn);
             header('Location: index.php?action=mostrarLibros');
             exit();
         } else {

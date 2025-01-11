@@ -27,7 +27,8 @@
 <body>
     <div class="container mt-5">
         <h1>Modificar Libro</h1>
-        <form action="index.php?action=modificarLibro" method="POST" enctype="multipart/form-data">
+        <form action="index.php?action=modificarLibro&isbn=<?php echo $libro['ISBN']; ?>&autor=<?php echo $libro['autor']; ?>&titulo=<?php echo $libro['titulo']; ?>" method="POST" enctype="multipart/form-data">
+            <!-- <form action="index.php?action=modificarLibro" method="POST" enctype="multipart/form-data"> -->
             <div class="mb-3">
                 <label for="titulo" class="form-label">Título:</label>
                 <input type="text" id="titulo" name="titulo" class="form-control" value="<?php echo $_GET['titulo']; ?>" required>
@@ -45,7 +46,8 @@
                 <input type="file" id="portada" name="portada" class="form-control">
             </div>
             <button type="submit" class="btn btn-primary">Modificar Libro</button>
-            <a href="index.php?action=dashboard" class="btn btn-secondary">Regresar al Menú Principal</a>
+            <a href="index.php?action=mostrarLibros" class="btn btn-secondary">Regresar a Estantería</a>
+
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -70,7 +70,7 @@ switch ($action) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $libroController->modificarLibro();
             } else {
-                include 'view/ModificarLibro.php';
+                $libroController->modificarLibro();
             }
         } else {
             header('Location: index.php?action=dashboard');
